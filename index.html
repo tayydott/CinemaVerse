@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CINEMOV - Movie Streaming Platform</title>
+    <title>CINEMOV - Streaming Platform</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * {
@@ -24,6 +24,7 @@
             color: var(--light-color);
         }
 
+        /* Header Styles */
         .header {
             background: rgba(0, 0, 0, 0.95);
             padding: 20px 50px;
@@ -40,6 +41,7 @@
             margin-bottom: 20px;
         }
 
+        /* Navigation */
         .nav-container {
             display: flex;
             justify-content: space-between;
@@ -82,6 +84,7 @@
             width: 100%;
         }
 
+        /* Search Bar */
         .search-container {
             position: relative;
             width: 300px;
@@ -112,50 +115,19 @@
             color: rgba(255, 255, 255, 0.7);
         }
 
-        .predictions-dropdown {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: #1a1a1a;
-            border-radius: 0 0 10px 10px;
-            max-height: 300px;
-            overflow-y: auto;
-            display: none;
-            z-index: 1000;
-            box-shadow: 0 10px 15px rgba(0,0,0,0.3);
-        }
-
-        .prediction-item {
-            padding: 10px 20px;
-            cursor: pointer;
-            transition: background 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .prediction-item:hover {
-            background: var(--primary-color);
-        }
-
-        .prediction-thumbnail {
-            width: 40px;
-            height: 40px;
-            background-size: cover;
-            border-radius: 4px;
-        }
-
+        /* Main Content */
         .main-content {
             padding: 180px 50px 50px;
         }
 
+        /* Movies Grid */
         .movies-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 30px;
         }
 
+        /* Movie Card */
         .movie-card {
             background: #1a1a1a;
             border-radius: 10px;
@@ -204,10 +176,10 @@
             background: #4CAF50;
         }
 
+        /* Seasons & Episodes */
         .seasons-container {
             display: none;
             margin-top: 15px;
-            transition: all 0.3s ease;
         }
 
         .season {
@@ -217,10 +189,38 @@
             padding: 15px;
         }
 
+        .season-header {
+            padding: 12px;
+            background: #333;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .season-header:hover {
+            background: #3a3a3a;
+        }
+
+        .season-title {
+            color: var(--primary-color);
+            margin: 0;
+        }
+
+        .episodes-container {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            padding-left: 15px;
+        }
+
         .episodes-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 10px;
+            padding: 10px 0;
         }
 
         .episode-card {
@@ -246,6 +246,19 @@
             margin: 5px 0;
         }
 
+        .chevron-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .season.open .chevron-icon {
+            transform: rotate(180deg);
+        }
+
+        .season.open .episodes-container {
+            max-height: 1000px;
+        }
+
+        /* Video Player Modal */
         .modal {
             display: none;
             position: fixed;
@@ -338,47 +351,57 @@
         const movies = [
             {
                 id: 1,
-                title: "The Matrix Resurrections",
-                description: "Return to a world of two realities",
-                year: 2021,
-                genre: "Sci-Fi",
-                type: "movie",
-                rating: 8.5,
-                thumbnail: "images/matrix.jpg",
-                source: "videos/matrix.mp4",
-                duration: "2h 28m"
-            },
-            {
-                id: 2,
                 title: "Stranger Things",
                 description: "Supernatural events in Hawkins",
                 year: 2016,
                 genre: "Horror",
                 type: "series",
-                rating: 8.7,
                 thumbnail: "images/stranger-things.jpg",
                 seasons: [
                     {
                         number: 1,
                         episodes: [
                             { title: "Chapter One: The Vanishing", source: "videos/st_s1e1.mp4", duration: "47m" },
-                            { title: "Chapter Two: The Weirdo", source: "videos/st_s1e2.mp4", duration: "55m" },
-                            { title: "Chapter Three: Holly, Jolly", source: "videos/st_s1e3.mp4", duration: "51m" },
-                            { title: "Chapter Four: The Body", source: "videos/st_s1e4.mp4", duration: "49m" },
-                            { title: "Chapter Five: The Flea", source: "videos/st_s1e5.mp4", duration: "52m" }
+                            { title: "Chapter Two: The Weirdo", source: "videos/st_s1e2.mp4", duration: "55m" }
                         ]
                     },
                     {
                         number: 2,
                         episodes: [
                             { title: "Chapter One: MADMAX", source: "videos/st_s2e1.mp4", duration: "48m" },
-                            { title: "Chapter Two: Trick or Treat", source: "videos/st_s2e2.mp4", duration: "56m" },
-                            { title: "Chapter Three: The Pollywog", source: "videos/st_s2e3.mp4", duration: "51m" },
-                            { title: "Chapter Four: Will the Wise", source: "videos/st_s2e4.mp4", duration: "49m" },
-                            { title: "Chapter Five: Dig Dug", source: "videos/st_s2e5.mp4", duration: "53m" }
+                            { title: "Chapter Two: Trick or Treat", source: "videos/st_s2e2.mp4", duration: "56m" }
                         ]
                     }
                 ]
+            },
+            {
+                id: 2,
+                title: "The Mandalorian",
+                description: "A Star Wars story",
+                year: 2019,
+                genre: "Sci-Fi",
+                type: "series",
+                thumbnail: "images/mandalorian.jpg",
+                seasons: [
+                    {
+                        number: 1,
+                        episodes: [
+                            { title: "Chapter 1", source: "videos/mando_s1e1.mp4", duration: "38m" },
+                            { title: "Chapter 2", source: "videos/mando_s1e2.mp4", duration: "42m" }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 3,
+                title: "Inception",
+                description: "A mind-bending heist",
+                year: 2010,
+                genre: "Action",
+                type: "movie",
+                thumbnail: "images/inception.jpg",
+                source: "videos/inception.mp4",
+                duration: "2h 28m"
             }
         ];
 
@@ -408,7 +431,7 @@
                                 ${myList.includes(movie.id) ? '✓ Added' : '+ Add'}
                             </button>
                         </div>
-                        ${movie.title === 'Stranger Things' ? `<div class="seasons-container">${renderSeasons(movie)}</div>` : ''}
+                        ${movie.type === 'series' ? `<div class="seasons-container">${renderSeasons(movie)}</div>` : ''}
                     </div>
                 </div>
             `).join('');
@@ -419,18 +442,28 @@
         function renderSeasons(series) {
             return series.seasons.map(season => `
                 <div class="season">
-                    <h4 class="season-title">Season ${season.number}</h4>
-                    <div class="episodes-grid">
-                        ${season.episodes.map((episode, index) => `
-                            <div class="episode-card" onclick="openPlayer('${episode.source}')">
-                                <div class="episode-number">Episode ${index + 1}</div>
-                                <div class="episode-title">${episode.title}</div>
-                                <div class="episode-duration">${episode.duration}</div>
-                            </div>
-                        `).join('')}
+                    <div class="season-header" onclick="toggleSeason(this)">
+                        <h4 class="season-title">Season ${season.number}</h4>
+                        <i class="fas fa-chevron-down chevron-icon"></i>
+                    </div>
+                    <div class="episodes-container">
+                        <div class="episodes-grid">
+                            ${season.episodes.map((episode, index) => `
+                                <div class="episode-card" onclick="openPlayer('${episode.source}')">
+                                    <div class="episode-number">Episode ${index + 1}</div>
+                                    <div class="episode-title">${episode.title}</div>
+                                    <div class="episode-duration">${episode.duration}</div>
+                                </div>
+                            `).join('')}
+                        </div>
                     </div>
                 </div>
             `).join('');
+        }
+
+        function toggleSeason(seasonHeader) {
+            const season = seasonHeader.parentElement;
+            season.classList.toggle('open');
         }
 
         function toggleMyList(movieId) {
@@ -530,7 +563,7 @@
                                 ${myList.includes(movie.id) ? '✓ Added' : '+ Add'}
                             </button>
                         </div>
-                        ${movie.title === 'Stranger Things' ? `<div class="seasons-container">${renderSeasons(movie)}</div>` : ''}
+                        ${movie.type === 'series' ? `<div class="seasons-container">${renderSeasons(movie)}</div>` : ''}
                     </div>
                 </div>
             `).join('');
@@ -538,42 +571,38 @@
         }
 
         document.querySelectorAll('.nav-link').forEach(link => {
-        link.addEventListener('click', (e) => {
-            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-            e.target.classList.add('active');
-            renderMovies(e.target.dataset.filter);
+            link.addEventListener('click', (e) => {
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                e.target.classList.add('active');
+                renderMovies(e.target.dataset.filter);
+            });
         });
-    });
 
-    document.addEventListener('click', (e) => {
-        if (!e.target.closest('.search-container')) {
-            document.getElementById('predictionsDropdown').style.display = 'none';
-        }
-    });
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.search-container')) {
+                document.getElementById('predictionsDropdown').style.display = 'none';
+            }
+        });
 
-    function addCardListeners() {
-        document.querySelectorAll('.movie-card').forEach(card => {
-            card.addEventListener('click', (e) => {
-                if (!e.target.classList.contains('add-to-list')) {
-                    const movie = movies.find(m => m.id == card.dataset.id);
-                    if (movie.title === 'Stranger Things') {
-                        const seasonsContainer = card.querySelector('.seasons-container');
-                        seasonsContainer.style.display = 
-                            seasonsContainer.style.display === 'none' ? 'block' : 'none';
-                    } else {
-                        if(movie.type === 'series') {
-                            openPlayer(movie.seasons[0].episodes[0].source);
+        function addCardListeners() {
+            document.querySelectorAll('.movie-card').forEach(card => {
+                card.addEventListener('click', (e) => {
+                    if (!e.target.classList.contains('add-to-list')) {
+                        const movie = movies.find(m => m.id == card.dataset.id);
+                        if (movie.type === 'series') {
+                            const seasonsContainer = card.querySelector('.seasons-container');
+                            seasonsContainer.style.display = 
+                                seasonsContainer.style.display === 'none' ? 'block' : 'none';
                         } else {
                             openPlayer(movie.source);
                         }
                     }
-                }
+                });
             });
-        });
-    }
+        }
 
-    // Initial render
-    renderMovies('home');
-</script>
+        // Initial render
+        renderMovies('home');
+    </script>
 </body>
 </html>
