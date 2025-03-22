@@ -24,7 +24,6 @@
             color: var(--light-color);
         }
 
-        /* Header Styles */
         .header {
             background: rgba(0, 0, 0, 0.95);
             padding: 20px 50px;
@@ -41,7 +40,6 @@
             margin-bottom: 20px;
         }
 
-        /* Navigation */
         .nav-container {
             display: flex;
             justify-content: space-between;
@@ -84,7 +82,6 @@
             width: 100%;
         }
 
-        /* Search Bar */
         .search-container {
             position: relative;
             width: 300px;
@@ -115,7 +112,6 @@
             color: rgba(255, 255, 255, 0.7);
         }
 
-        /* Predictions Dropdown */
         .predictions-dropdown {
             position: absolute;
             top: 100%;
@@ -150,23 +146,16 @@
             border-radius: 4px;
         }
 
-        .prediction-text {
-            font-size: 0.9rem;
-        }
-
-        /* Main Content */
         .main-content {
             padding: 180px 50px 50px;
         }
 
-        /* Movies Grid */
         .movies-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 30px;
         }
 
-        /* Movie Card */
         .movie-card {
             background: #1a1a1a;
             border-radius: 10px;
@@ -215,9 +204,10 @@
             background: #4CAF50;
         }
 
-        /* Seasons & Episodes */
         .seasons-container {
+            display: none;
             margin-top: 15px;
+            transition: all 0.3s ease;
         }
 
         .season {
@@ -225,15 +215,6 @@
             border-radius: 8px;
             margin: 10px 0;
             padding: 15px;
-        }
-
-        .season-header {
-            margin-bottom: 10px;
-        }
-
-        .season-title {
-            color: var(--primary-color);
-            font-size: 1rem;
         }
 
         .episodes-grid {
@@ -265,7 +246,6 @@
             margin: 5px 0;
         }
 
-        /* Video Player Modal */
         .modal {
             display: none;
             position: fixed;
@@ -405,9 +385,6 @@
         let myList = JSON.parse(localStorage.getItem('myList')) || [];
         let searchTimeout;
 
-        // Initial render
-        renderMovies('home');
-
         function renderMovies(filter = 'home') {
             const container = document.getElementById('moviesContainer');
             let filtered = movies;
@@ -431,7 +408,7 @@
                                 ${myList.includes(movie.id) ? '✓ Added' : '+ Add'}
                             </button>
                         </div>
-                        ${movie.type === 'series' ? renderSeasons(movie) : ''}
+                        ${movie.title === 'Stranger Things' ? `<div class="seasons-container">${renderSeasons(movie)}</div>` : ''}
                     </div>
                 </div>
             `).join('');
@@ -440,26 +417,20 @@
         }
 
         function renderSeasons(series) {
-            return `
-                <div class="seasons-container">
-                    ${series.seasons.map(season => `
-                        <div class="season">
-                            <div class="season-header">
-                                <h4 class="season-title">Season ${season.number}</h4>
+            return series.seasons.map(season => `
+                <div class="season">
+                    <h4 class="season-title">Season ${season.number}</h4>
+                    <div class="episodes-grid">
+                        ${season.episodes.map((episode, index) => `
+                            <div class="episode-card" onclick="openPlayer('${episode.source}')">
+                                <div class="episode-number">Episode ${index + 1}</div>
+                                <div class="episode-title">${episode.title}</div>
+                                <div class="episode-duration">${episode.duration}</div>
                             </div>
-                            <div class="episodes-grid">
-                                ${season.episodes.map((episode, index) => `
-                                    <div class="episode-card" onclick="openPlayer('${episode.source}')">
-                                        <div class="episode-number">Episode ${index + 1}</div>
-                                        <div class="episode-title">${episode.title}</div>
-                                        <div class="episode-duration">${episode.duration}</div>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        </div>
-                    `).join('')}
+                        `).join('')}
+                    </div>
                 </div>
-            `;
+            `).join('');
         }
 
         function toggleMyList(movieId) {
@@ -492,7 +463,6 @@
             }
         }
 
-        // Search functionality
         document.getElementById('searchInput').addEventListener('input', (e) => {
             clearTimeout(searchTimeout);
             const term = e.target.value.toLowerCase();
@@ -560,13 +530,13 @@
                                 ${myList.includes(movie.id) ? '✓ Added' : '+ Add'}
                             </button>
                         </div>
-                        ${movie.type === 'series' ? renderSeasons(movie) : ''}
+                        ${movie.title === 'Stranger Things' ? `<div class="seasons-container">${renderSeasons(movie)}</div>` : ''}
                     </div>
                 </div>
             `).join('');
+            addCardListeners();
         }
 
-        // Navigation handling
         document.querySelectorAll('.nav-link').forEach(link => {
             link.addEventListener('click', (e) => {
                 document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
@@ -586,15 +556,9 @@
                 card.addEventListener('click', (e) => {
                     if (!e.target.classList.contains('add-to-list')) {
                         const movie = movies.find(m => m.id == card.dataset.id);
-                        if(movie.type === 'series') {
-                            openPlayer(movie.seasons[0].episodes[0].source);
-                        } else {
-                            openPlayer(movie.source);
-                        }
-                    }
-                });
-            });
-        }
-    </script>
+                        if (movie.title === 'Stranger Things') {
+                                // Initial render
+    renderMovies('home');
+</script>
 </body>
 </html>
