@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CineVerse - Modern Movie Experience</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Previous styles remain the same, add these new styles */
+
+        .genre-section {
+            margin: 40px 0;
+            padding: 0 50px;
+        }
+
+        .genre-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+
+        .movies-row {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            padding-bottom: 20px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+        }
+
+        .modal-content {
+            width: 80%;
+            height: 80%;
+            margin: 5% auto;
+            background: #000;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+        }
+
+        .add-to-list {
+            background: var(--primary-color);
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
+        .add-to-list.added {
+            background: #4CAF50;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">CINEMOV</div>
+        <nav class="nav-links">
+            <a href="#" class="nav-link" data-filter="home">Home</a>
+            <a href="#" class="nav-link" data-filter="movie">Movies</a>
+            <a href="#" class="nav-link" data-filter="series">Series</a>
+            <a href="#" class="nav-link" data-filter="mylist">My List</a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Unlimited Movies, TV Shows, and More</h1>
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="Search for movies, TV shows...">
+            </div>
+        </div>
+    </section>
+
+    <main class="content-area" id="contentArea"></main>
+
+    <div class="modal" id="playerModal">
+        <span class="close-btn" onclick="closePlayer()">&times;</span>
+        <div class="modal-content" id="modalContent"></div>
+    </div>
+
+    <script>
+        const movies = [
+            {
+                id: 1,
+                title: "The Matrix Resurrections",
+                description: "Return to a world of two realities...",
+                year: 2021,
+                genre: "Sci-Fi",
+                type: "movie",
+                rating: 6.5,
+                thumbnail: "https://source.unsplash.com/random/800x1200/?matrix",
+                videoId: "tgB1wUkmbbw"
+            },
+            {
+                id: 2,
+                title: "Stranger Things",
+                description: "A group of kids face supernatural forces...",
+                year: 2016,
+                genre: "Horror",
+                type: "series",
+                rating: 8.7,
+                thumbnail: "https://source.unsplash.com/random/800x1200/?stranger-things",
+                videoId: "yTX0HxTq9ZY"
+            },
+            // Add more movies/series with type and videoId
+        ];
+
+        let myList = JSON.parse(localStorage.getItem('myList')) || [];
+
+        function renderContent(filter = 'home') {
+            const container = document.getElementById('contentArea');
+            let content = '';
+
+            if (filter === 'mylist') {
+                content = `<div class="movies-container">${renderMovieCards(getMyList())}</div>`;
+            } else if (filter === 'home') {
+                content = renderGenreSections();
+            } else {
+                const filtered = movies.filter(item => item.type === filter);
+                content = `<div class="movies-container">${renderMovieCards(filtered)}</div>`;
+            }
+
+            container.innerHTML = content;
+            addCardListeners();
+        }
+
+        function renderGenreSections() {
+            const genres = [...new Set(movies.map(movie => movie.genre))];
+            return genres.map(genre => `
+                <div class="genre-section">
+                    <h2 class="genre-title">${genre}</h2>
+                    <div class="movies-row">
+                        ${renderMovieCards(movies.filter(movie => movie.genre === genre))}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderMovieCards(movies) {
+            return movies.map(movie => `
+                <div class="movie-card" data-id="${movie.id}">
+                    <div class="movie-thumbnail" style="background-image: url('${movie.thumbnail}')"></div>
+                    <div class="movie-info">
+                        <h3 class="movie-title">${movie.title}</h3>
+                        <p class="movie-description">${movie.description}</p>
+                        <div class="movie-details">
+                            <span>${movie.year}</span>
+                            <span>${movie.genre}</span>
+                            <button class="add-to-list ${myList.includes(movie.id) ? 'added' : ''}"
+                                    onclick="toggleMyList(${movie.id})">
+                                ${myList.includes(movie.id) ? '✓ Added' : '+ Add to List'}
+                            </button>
+                            <span class="rating">★ ${movie.rating}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function toggleMyList(movieId) {
+            const index = myList.indexOf(movieId);
+            if (index === -1) {
+                myList.push(movieId);
+            } else {
+                myList.splice(index, 1);
+            }
+            localStorage.setItem('myList', JSON.stringify(myList));
+            renderContent(document.querySelector('.nav-link.active').dataset.filter);
+        }
+
+        function getMyList() {
+            return movies.filter(movie => myList.includes(movie.id));
+        }
+
+        function openPlayer(videoId) {
+            document.getElementById('playerModal').style.display = 'block';
+            document.getElementById('modalContent').innerHTML = `
+                <iframe width="100%" height="100%" src="https://www.youtube.com/embed/${videoId}"
+                    frameborder="0" allowfullscreen></iframe>
+            `;
+        }
+
+        function closePlayer() {
+            document.getElementById('playerModal').style.display = 'none';
+            document.getElementById('modalContent').innerHTML = '';
+        }
+
+        function addCardListeners() {
+            document.querySelectorAll('.movie-card').forEach(card => {
+                card.addEventListener('click', (e) => {
+                    if (!e.target.classList.contains('add-to-list')) {
+                        const movieId = card.dataset.id;
+                        const movie = movies.find(m => m.id == movieId);
+                        openPlayer(movie.videoId);
+                    }
+                });
+            });
+        }
+
+        // Navigation handling
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                e.target.classList.add('active');
+                const filter = e.target.dataset.filter;
+                renderContent(filter);
+            });
+        });
+
+        // Search functionality
+        document.querySelector('.search-input').addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const filtered = movies.filter(movie =>
+                movie.title.toLowerCase().includes(searchTerm) ||
+                movie.description.toLowerCase().includes(searchTerm) ||
+                movie.genre.toLowerCase().includes(searchTerm)
+            );
+            document.getElementById('contentArea').innerHTML = `
+                <div class="movies-container">${renderMovieCards(filtered)}</div>
+            `;
+            addCardListeners();
+        });
+
+        // Initial render
+        document.querySelector('[data-filter="home"]').classList.add('active');
+        renderContent('home');
+    </script>
+</body>
+</html>
