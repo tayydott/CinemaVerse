@@ -538,26 +538,42 @@
         }
 
         document.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', (e) => {
-                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-                e.target.classList.add('active');
-                renderMovies(e.target.dataset.filter);
+        link.addEventListener('click', (e) => {
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            e.target.classList.add('active');
+            renderMovies(e.target.dataset.filter);
+        });
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.search-container')) {
+            document.getElementById('predictionsDropdown').style.display = 'none';
+        }
+    });
+
+    function addCardListeners() {
+        document.querySelectorAll('.movie-card').forEach(card => {
+            card.addEventListener('click', (e) => {
+                if (!e.target.classList.contains('add-to-list')) {
+                    const movie = movies.find(m => m.id == card.dataset.id);
+                    if (movie.title === 'Stranger Things') {
+                        const seasonsContainer = card.querySelector('.seasons-container');
+                        seasonsContainer.style.display = 
+                            seasonsContainer.style.display === 'none' ? 'block' : 'none';
+                    } else {
+                        if(movie.type === 'series') {
+                            openPlayer(movie.seasons[0].episodes[0].source);
+                        } else {
+                            openPlayer(movie.source);
+                        }
+                    }
+                }
             });
         });
+    }
 
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('.search-container')) {
-                document.getElementById('predictionsDropdown').style.display = 'none';
-            }
-        });
-
-        function addCardListeners() {
-            document.querySelectorAll('.movie-card').forEach(card => {
-                card.addEventListener('click', (e) => {
-                    if (!e.target.classList.contains('add-to-list')) {
-                        const movie = movies.find(m => m.id == card.dataset.id);
-                        if (movie.title === 'Stranger Things') {
-                                // Initial render renderMovies('home');
+    // Initial render
+    renderMovies('home');
 </script>
 </body>
 </html>
