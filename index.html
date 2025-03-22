@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CineVerse - Ultimate Movie Experience</title>
+    <title>CineVerse - Local Movie Hosting</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * {
@@ -45,41 +45,40 @@
             letter-spacing: 2px;
         }
 
+        /* Navigation */
         .nav-links {
             display: flex;
-            gap: 30px;
+            gap: 15px;
+            margin-left: auto;
         }
 
-        .nav-links a {
-            color: var(--light-color);
+        .nav-link {
+            padding: 12px 25px;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
             text-decoration: none;
-            position: relative;
-            padding-bottom: 5px;
-            transition: color 0.3s;
-        }
-
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            width: 0;
-            height: 2px;
-            background: var(--primary-color);
             transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .nav-links a:hover::after,
-        .nav-links a.active::after {
-            width: 100%;
-            left: 0;
+        .nav-link:hover {
+            background: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .nav-link.active {
+            background: var(--primary-color);
+            box-shadow: 0 5px 15px rgba(229, 9, 20, 0.3);
         }
 
         /* Hero Section */
         .hero {
             height: 80vh;
             background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
-                        url('https://source.unsplash.com/1600x900/?cinema') center/cover;
+                        url('images/hero-bg.jpg') center/cover;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -87,92 +86,24 @@
             padding-top: 80px;
         }
 
-        .hero-content {
-            max-width: 800px;
-            padding: 20px;
-            animation: fadeInUp 1s ease;
-        }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(50px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Search Box */
-        .search-box {
-            margin-top: 30px;
-            position: relative;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .search-input {
-            width: 100%;
-            padding: 15px 30px;
-            border-radius: 30px;
-            border: none;
-            font-size: 1.1rem;
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            transition: all 0.3s ease;
-        }
-
-        .search-input:focus {
-            outline: none;
-            background: rgba(255, 255, 255, 0.2);
-            box-shadow: 0 0 20px rgba(229, 9, 20, 0.3);
-        }
-
-        /* Content Area */
-        .content-area {
-            padding: 50px;
-        }
-
-        /* Genre Sections */
-        .genre-section {
-            margin: 60px 0;
-        }
-
-        .genre-title {
-            font-size: 1.8rem;
-            margin-bottom: 30px;
-            padding-left: 20px;
-            position: relative;
-        }
-
-        .genre-title::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 20px;
-            width: 50px;
-            height: 3px;
-            background: var(--primary-color);
-        }
-
-        .movies-row {
-            display: flex;
-            gap: 25px;
-            overflow-x: auto;
-            padding-bottom: 30px;
-            scroll-snap-type: x mandatory;
-        }
-
         /* Movie Cards */
+        .movies-container {
+            padding: 50px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
         .movie-card {
             background: #1a1a1a;
             border-radius: 15px;
             overflow: hidden;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1));
             cursor: pointer;
-            flex: 0 0 300px;
-            scroll-snap-align: start;
-            position: relative;
         }
 
         .movie-card:hover {
-            transform: translateY(-10px) scale(1.02);
+            transform: translateY(-10px);
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
         }
 
@@ -181,89 +112,6 @@
             background-size: cover;
             background-position: center;
             position: relative;
-            transition: transform 0.3s ease;
-        }
-
-        .movie-thumbnail::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(180deg, rgba(0,0,0,0) 60%, rgba(0,0,0,0.9) 100%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .movie-card:hover .movie-thumbnail::after {
-            opacity: 1;
-        }
-
-        .play-icon {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0);
-            color: white;
-            font-size: 4rem;
-            opacity: 0;
-            transition: all 0.3s ease;
-            z-index: 1;
-            text-shadow: 0 0 15px rgba(0,0,0,0.5);
-        }
-
-        .movie-card:hover .play-icon {
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1);
-        }
-
-        .movie-info {
-            padding: 20px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .movie-title {
-            font-size: 1.3rem;
-            margin-bottom: 10px;
-        }
-
-        .movie-description {
-            color: #aaa;
-            font-size: 0.95rem;
-            margin-bottom: 15px;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .movie-details {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: #777;
-            font-size: 0.9rem;
-        }
-
-        .add-to-list {
-            background: var(--primary-color);
-            border: none;
-            color: white;
-            padding: 8px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .add-to-list:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(229, 9, 20, 0.3);
-        }
-
-        .add-to-list.added {
-            background: #4CAF50;
         }
 
         /* Video Player Modal */
@@ -276,12 +124,6 @@
             height: 100%;
             background: rgba(0, 0, 0, 0.95);
             z-index: 2000;
-            animation: modalFadeIn 0.3s ease;
-        }
-
-        @keyframes modalFadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
         }
 
         .modal-content {
@@ -291,12 +133,12 @@
             background: #000;
             border-radius: 10px;
             overflow: hidden;
-            animation: modalSlideIn 0.3s ease;
         }
 
-        @keyframes modalSlideIn {
-            from { transform: scale(0.8); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
+        .video-player {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
         }
 
         .close-btn {
@@ -313,67 +155,15 @@
             transform: rotate(90deg);
         }
 
-        /* Loading Spinner */
-        .loading-spinner {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 50px;
-            height: 50px;
-            border: 5px solid #f3f3f3;
-            border-top: 5px solid var(--primary-color);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            z-index: 9999;
-        }
-
-        @keyframes spin {
-            0% { transform: translate(-50%, -50%) rotate(0deg); }
-            100% { transform: translate(-50%, -50%) rotate(360deg); }
-        }
-
         /* Responsive Design */
         @media (max-width: 768px) {
             .header {
                 padding: 15px 20px;
             }
-
-            .nav-links {
-                display: none;
-            }
-
-            .hero {
-                height: 70vh;
-                padding-top: 60px;
-            }
-
-            .hero h1 {
-                font-size: 2rem;
-            }
-
-            .content-area {
-                padding: 30px 20px;
-            }
-
-            .genre-title {
-                font-size: 1.5rem;
-            }
-
-            .movie-card {
-                flex: 0 0 250px;
-            }
-
-            .movie-thumbnail {
-                height: 350px;
-            }
-
             .modal-content {
                 width: 95%;
                 height: 50%;
             }
-
             .close-btn {
                 top: 20px;
                 right: 20px;
@@ -383,177 +173,160 @@
     </style>
 </head>
 <body>
-    <div class="loading-spinner" id="loadingSpinner"></div>
-
     <header class="header">
         <div class="logo">CINEMOV</div>
         <nav class="nav-links">
-            <a href="#" class="nav-link active" data-filter="home">Home</a>
-            <a href="#" class="nav-link" data-filter="movie">Movies</a>
-            <a href="#" class="nav-link" data-filter="series">Series</a>
-            <a href="#" class="nav-link" data-filter="mylist">My List</a>
+            <a href="#" class="nav-link active" data-filter="home">
+                <i class="fas fa-home"></i>
+                Home
+            </a>
+            <a href="#" class="nav-link" data-filter="movie">
+                <i class="fas fa-film"></i>
+                Movies
+            </a>
+            <a href="#" class="nav-link" data-filter="series">
+                <i class="fas fa-tv"></i>
+                Series
+            </a>
+            <a href="#" class="nav-link" data-filter="mylist">
+                <i class="fas fa-list"></i>
+                My List
+            </a>
         </nav>
     </header>
 
     <section class="hero">
         <div class="hero-content">
-            <h1>Unlimited Movies, TV Shows, and More</h1>
-            <div class="search-box">
-                <input type="text" class="search-input" placeholder="Search for movies, TV shows...">
-            </div>
+            <h1>Your Personal Movie Library</h1>
         </div>
     </section>
 
-    <main class="content-area" id="contentArea"></main>
+    <main class="movies-container" id="moviesContainer"></main>
 
     <div class="modal" id="playerModal">
         <span class="close-btn" onclick="closePlayer()">&times;</span>
-        <div class="modal-content" id="modalContent"></div>
+        <div class="modal-content" id="modalContent">
+            <!-- Video player inserted here -->
+        </div>
     </div>
 
     <script>
+        // Movie Data (Update paths to your local files)
         const movies = [
             {
                 id: 1,
-                title: "The Matrix Resurrections",
-                description: "Return to a world of two realities: one, everyday life; the other, what lies behind it.",
-                year: 2021,
-                genre: "Sci-Fi",
+                title: "Sample Movie",
+                description: "An exciting adventure movie",
+                year: 2024,
+                genre: "Action",
                 type: "movie",
-                rating: 6.5,
-                thumbnail: "https://source.unsplash.com/random/800x1200/?matrix",
-                videoId: "tgB1wUkmbbw"
+                rating: 8.5,
+                thumbnail: "images/movie1-thumb.jpg",
+                source: "videos/movie1.mp4",
+                duration: "1h 38m"
             },
             {
                 id: 2,
-                title: "Stranger Things",
-                description: "A group of kids face supernatural forces in their small town.",
-                year: 2016,
-                genre: "Horror",
+                title: "Sample Series",
+                description: "A thrilling drama series",
+                year: 2024,
+                genre: "Drama",
                 type: "series",
-                rating: 8.7,
-                thumbnail: "https://source.unsplash.com/random/800x1200/?stranger-things",
-                videoId: "yTX0HxTq9ZY"
-            },
-            // Add more movies/series here
+                rating: 9.0,
+                thumbnail: "images/series1-thumb.jpg",
+                seasons: [
+                    {
+                        number: 1,
+                        episodes: [
+                            {
+                                title: "Episode 1: The Beginning",
+                                description: "Series premiere episode",
+                                source: "videos/series1-ep1.mp4",
+                                duration: "45m"
+                            }
+                        ]
+                    }
+                ]
+            }
         ];
 
         let myList = JSON.parse(localStorage.getItem('myList')) || [];
 
-        async function renderContent(filter = 'home') {
-            showLoading();
-            
-            // Simulate API call delay
-            await new Promise(resolve => setTimeout(resolve, 500));
-            
-            const container = document.getElementById('contentArea');
+        // Render Movies
+        function renderMovies(filter = 'home') {
+            const container = document.getElementById('moviesContainer');
             let content = '';
 
-            if (filter === 'mylist') {
-                const list = getMyList();
-                content = list.length > 0 
-                    ? `<div class="movies-row">${renderMovieCards(list)}</div>`
-                    : `<h2 class="genre-title">Your list is empty</h2>`;
-            } else if (filter === 'home') {
-                content = renderGenreSections();
-            } else {
-                const filtered = movies.filter(item => item.type === filter);
-                content = filtered.length > 0
-                    ? `<div class="movies-row">${renderMovieCards(filtered)}</div>`
-                    : `<h2 class="genre-title">No ${filter}s found</h2>`;
-            }
+            const filteredMovies = filter === 'home' ? movies : 
+                                filter === 'mylist' ? myList.map(id => movies.find(m => m.id === id)) :
+                                movies.filter(m => m.type === filter);
 
-            container.innerHTML = content;
-            addCardListeners();
-            hideLoading();
-        }
-
-        function renderGenreSections() {
-            const genres = [...new Set(movies.map(movie => movie.genre))];
-            return genres.map(genre => `
-                <div class="genre-section">
-                    <h2 class="genre-title">${genre}</h2>
-                    <div class="movies-row">
-                        ${renderMovieCards(movies.filter(movie => movie.genre === genre))}
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function renderMovieCards(movies) {
-            return movies.map(movie => `
+            content = filteredMovies.map(movie => `
                 <div class="movie-card" data-id="${movie.id}">
-                    <div class="movie-thumbnail" style="background-image: url('${movie.thumbnail}')">
-                        <i class="fas fa-play play-icon"></i>
-                    </div>
+                    <div class="movie-thumbnail" style="background-image: url('${movie.thumbnail}')"></div>
                     <div class="movie-info">
-                        <h3 class="movie-title">${movie.title}</h3>
-                        <p class="movie-description">${movie.description}</p>
+                        <h3>${movie.title}</h3>
+                        <p>${movie.description}</p>
                         <div class="movie-details">
                             <span>${movie.year}</span>
                             <span>${movie.genre}</span>
-                            <button class="add-to-list ${myList.includes(movie.id) ? 'added' : ''}"
-                                    onclick="toggleMyList(${movie.id})">
+                            <button class="add-to-list" onclick="toggleMyList(${movie.id})">
                                 ${myList.includes(movie.id) ? '✓ Added' : '+ Add to List'}
                             </button>
                         </div>
+                        ${movie.type === 'series' ? renderSeasons(movie) : ''}
                     </div>
+                </div>
+            `).join('');
+
+            container.innerHTML = content;
+            addCardListeners();
+        }
+
+        // Series Seasons
+        function renderSeasons(series) {
+            return series.seasons.map(season => `
+                <div class="season">
+                    <h4>Season ${season.number}</h4>
+                    ${season.episodes.map(episode => `
+                        <div class="episode" onclick="openPlayer('${episode.source}')">
+                            ${episode.title} - ${episode.duration}
+                        </div>
+                    `).join('')}
                 </div>
             `).join('');
         }
 
+        // Video Player Functions
+        function openPlayer(source) {
+            document.getElementById('playerModal').style.display = 'block';
+            document.getElementById('modalContent').innerHTML = `
+                <video class="video-player" controls autoplay>
+                    <source src="${source}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            `;
+        }
+
+        function closePlayer() {
+            const video = document.querySelector('.video-player');
+            if(video) {
+                video.pause();
+                video.currentTime = 0;
+            }
+            document.getElementById('playerModal').style.display = 'none';
+        }
+
+        // My List Functions
         function toggleMyList(movieId) {
             const index = myList.indexOf(movieId);
-            if (index === -1) {
+            if(index === -1) {
                 myList.push(movieId);
             } else {
                 myList.splice(index, 1);
             }
             localStorage.setItem('myList', JSON.stringify(myList));
-            renderContent(document.querySelector('.nav-link.active').dataset.filter);
-        }
-
-        function getMyList() {
-            return movies.filter(movie => myList.includes(movie.id));
-        }
-
-        function openPlayer(videoId) {
-            document.body.style.overflow = 'hidden';
-            document.getElementById('playerModal').style.display = 'block';
-            document.getElementById('modalContent').innerHTML = `
-                <iframe width="100%" height="100%" 
-                    src="https://www.youtube.com/embed/${videoId}?autoplay=1" 
-                    frameborder="0" 
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                    allowfullscreen>
-                </iframe>
-            `;
-        }
-
-        function closePlayer() {
-            document.body.style.overflow = 'auto';
-            document.getElementById('playerModal').style.display = 'none';
-            document.getElementById('modalContent').innerHTML = '';
-        }
-
-        function showLoading() {
-            document.getElementById('loadingSpinner').style.display = 'block';
-        }
-
-        function hideLoading() {
-            document.getElementById('loadingSpinner').style.display = 'none';
-        }
-
-        function addCardListeners() {
-            document.querySelectorAll('.movie-card').forEach(card => {
-                card.addEventListener('click', (e) => {
-                    if (!e.target.classList.contains('add-to-list')) {
-                        const movieId = card.dataset.id;
-                        const movie = movies.find(m => m.id == movieId);
-                        openPlayer(movie.videoId);
-                    }
-                });
-            });
+            renderMovies(document.querySelector('.nav-link.active').dataset.filter);
         }
 
         // Event Listeners
@@ -561,25 +334,12 @@
             link.addEventListener('click', (e) => {
                 document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
                 e.target.classList.add('active');
-                renderContent(e.target.dataset.filter);
+                renderMovies(e.target.dataset.filter);
             });
         });
 
-        document.querySelector('.search-input').addEventListener('input', (e) => {
-            const searchTerm = e.target.value.toLowerCase();
-            const filtered = movies.filter(movie =>
-                movie.title.toLowerCase().includes(searchTerm) ||
-                movie.description.toLowerCase().includes(searchTerm) ||
-                movie.genre.toLowerCase().includes(searchTerm)
-            );
-            document.getElementById('contentArea').innerHTML = `
-                <div class="movies-row">${renderMovieCards(filtered)}</div>
-            `;
-            addCardListeners();
-        });
-
         // Initial Render
-        renderContent('home');
+        renderMovies('home');
     </script>
 </body>
 </html>
