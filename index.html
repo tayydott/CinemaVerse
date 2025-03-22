@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CineVerse - Local Movie Hosting</title>
+    <title>CINEMOV - Movie Streaming Platform</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * {
@@ -22,96 +22,159 @@
         body {
             background-color: var(--dark-color);
             color: var(--light-color);
-            overflow-x: hidden;
         }
 
         /* Header Styles */
         .header {
-            background: linear-gradient(180deg, rgba(0,0,0,0.95) 50%, transparent 100%);
+            background: rgba(0, 0, 0, 0.95);
             padding: 20px 50px;
             position: fixed;
             width: 100%;
             z-index: 1000;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: all 0.3s ease;
         }
 
         .logo {
             color: var(--primary-color);
-            font-size: 2rem;
+            font-size: 2.5rem;
             font-weight: bold;
-            letter-spacing: 2px;
+            text-align: center;
+            margin-bottom: 20px;
         }
 
-        /* Navigation */
+        /* Navigation Bar */
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
         .nav-links {
             display: flex;
-            gap: 15px;
-            margin-left: auto;
+            gap: 30px;
         }
 
         .nav-link {
-            padding: 12px 25px;
-            border-radius: 25px;
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
+            color: var(--light-color);
             text-decoration: none;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            font-size: 1.1rem;
+            transition: color 0.3s;
+            position: relative;
         }
 
-        .nav-link:hover {
-            background: var(--primary-color);
-            transform: translateY(-2px);
-        }
-
+        .nav-link:hover,
         .nav-link.active {
-            background: var(--primary-color);
-            box-shadow: 0 5px 15px rgba(229, 9, 20, 0.3);
+            color: var(--primary-color);
         }
 
-        /* Hero Section */
-        .hero {
-            height: 80vh;
-            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
-                        url('images/hero-bg.jpg') center/cover;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding-top: 80px;
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-color);
+            transition: width 0.3s;
+        }
+
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+
+        /* Search Bar */
+        .search-box {
+            position: relative;
+            width: 300px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 20px;
+            border-radius: 25px;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--light-color);
+            padding-left: 40px;
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 15px rgba(229, 9, 20, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 180px 50px 50px;
         }
 
         /* Movie Cards */
-        .movies-container {
-            padding: 50px;
+        .movies-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 30px;
+            margin-top: 30px;
         }
 
         .movie-card {
             background: #1a1a1a;
-            border-radius: 15px;
+            border-radius: 10px;
             overflow: hidden;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1));
+            transition: transform 0.3s;
             cursor: pointer;
         }
 
         .movie-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
+            transform: translateY(-5px);
         }
 
         .movie-thumbnail {
-            height: 450px;
+            height: 350px;
             background-size: cover;
             background-position: center;
             position: relative;
+        }
+
+        .movie-info {
+            padding: 15px;
+        }
+
+        .movie-title {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+
+        .movie-details {
+            display: flex;
+            justify-content: space-between;
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .add-to-list {
+            background: var(--primary-color);
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
+        .add-to-list.added {
+            background: #4CAF50;
         }
 
         /* Video Player Modal */
@@ -148,26 +211,30 @@
             color: white;
             font-size: 40px;
             cursor: pointer;
-            transition: transform 0.3s ease;
         }
 
-        .close-btn:hover {
-            transform: rotate(90deg);
-        }
-
-        /* Responsive Design */
         @media (max-width: 768px) {
             .header {
                 padding: 15px 20px;
             }
+            
+            .nav-container {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .search-box {
+                width: 100%;
+            }
+            
             .modal-content {
                 width: 95%;
                 height: 50%;
-            }
-            .close-btn {
-                top: 20px;
-                right: 20px;
-                font-size: 30px;
             }
         }
     </style>
@@ -175,74 +242,59 @@
 <body>
     <header class="header">
         <div class="logo">CINEMOV</div>
-        <nav class="nav-links">
-            <a href="#" class="nav-link active" data-filter="home">
-                <i class="fas fa-home"></i>
-                Home
-            </a>
-            <a href="#" class="nav-link" data-filter="movie">
-                <i class="fas fa-film"></i>
-                Movies
-            </a>
-            <a href="#" class="nav-link" data-filter="series">
-                <i class="fas fa-tv"></i>
-                Series
-            </a>
-            <a href="#" class="nav-link" data-filter="mylist">
-                <i class="fas fa-list"></i>
-                My List
-            </a>
-        </nav>
+        <div class="nav-container">
+            <nav class="nav-links">
+                <a href="#" class="nav-link active" data-filter="home">Home</a>
+                <a href="#" class="nav-link" data-filter="movie">Movies</a>
+                <a href="#" class="nav-link" data-filter="series">Series</a>
+                <a href="#" class="nav-link" data-filter="mylist">My List</a>
+            </nav>
+            <div class="search-box">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" placeholder="Search movies and series...">
+            </div>
+        </div>
     </header>
 
-    <section class="hero">
-        <div class="hero-content">
-            <h1>Your Personal Movie Library</h1>
-        </div>
-    </section>
-
-    <main class="movies-container" id="moviesContainer"></main>
+    <main class="main-content">
+        <div class="movies-grid" id="moviesContainer"></div>
+    </main>
 
     <div class="modal" id="playerModal">
         <span class="close-btn" onclick="closePlayer()">&times;</span>
-        <div class="modal-content" id="modalContent">
-            <!-- Video player inserted here -->
-        </div>
+        <div class="modal-content" id="modalContent"></div>
     </div>
 
     <script>
-        // Movie Data (Update paths to your local files)
         const movies = [
             {
                 id: 1,
-                title: "Sample Movie",
-                description: "An exciting adventure movie",
-                year: 2024,
-                genre: "Action",
+                title: "The Matrix Resurrections",
+                description: "Return to a world of two realities...",
+                year: 2021,
+                genre: "Sci-Fi",
                 type: "movie",
-                rating: 8.5,
-                thumbnail: "images/movie1-thumb.jpg",
-                source: "videos/movie1.mp4",
-                duration: "1h 38m"
+                rating: 6.5,
+                thumbnail: "images/matrix.jpg",
+                source: "videos/matrix.mp4"
             },
             {
                 id: 2,
-                title: "Sample Series",
-                description: "A thrilling drama series",
-                year: 2024,
-                genre: "Drama",
+                title: "Stranger Things",
+                description: "Supernatural forces in Hawkins",
+                year: 2016,
+                genre: "Horror",
                 type: "series",
-                rating: 9.0,
-                thumbnail: "images/series1-thumb.jpg",
+                rating: 8.7,
+                thumbnail: "images/stranger-things.jpg",
                 seasons: [
                     {
                         number: 1,
                         episodes: [
                             {
-                                title: "Episode 1: The Beginning",
-                                description: "Series premiere episode",
-                                source: "videos/series1-ep1.mp4",
-                                duration: "45m"
+                                title: "Chapter One: The Vanishing",
+                                source: "videos/st-s1e1.mp4",
+                                duration: "55min"
                             }
                         ]
                     }
@@ -252,29 +304,28 @@
 
         let myList = JSON.parse(localStorage.getItem('myList')) || [];
 
-        // Render Movies
+        // Render movies
         function renderMovies(filter = 'home') {
             const container = document.getElementById('moviesContainer');
             let content = '';
 
-            const filteredMovies = filter === 'home' ? movies : 
-                                filter === 'mylist' ? myList.map(id => movies.find(m => m.id === id)) :
-                                movies.filter(m => m.type === filter);
+            const filteredMovies = filter === 'home' ? movies :
+                filter === 'mylist' ? movies.filter(m => myList.includes(m.id)) :
+                movies.filter(m => m.type === filter);
 
             content = filteredMovies.map(movie => `
                 <div class="movie-card" data-id="${movie.id}">
                     <div class="movie-thumbnail" style="background-image: url('${movie.thumbnail}')"></div>
                     <div class="movie-info">
-                        <h3>${movie.title}</h3>
-                        <p>${movie.description}</p>
+                        <h3 class="movie-title">${movie.title}</h3>
                         <div class="movie-details">
                             <span>${movie.year}</span>
                             <span>${movie.genre}</span>
-                            <button class="add-to-list" onclick="toggleMyList(${movie.id})">
-                                ${myList.includes(movie.id) ? '✓ Added' : '+ Add to List'}
+                            <button class="add-to-list ${myList.includes(movie.id) ? 'added' : ''}"
+                                    onclick="toggleMyList(${movie.id})">
+                                ${myList.includes(movie.id) ? '✓ Added' : '+ Add'}
                             </button>
                         </div>
-                        ${movie.type === 'series' ? renderSeasons(movie) : ''}
                     </div>
                 </div>
             `).join('');
@@ -283,44 +334,10 @@
             addCardListeners();
         }
 
-        // Series Seasons
-        function renderSeasons(series) {
-            return series.seasons.map(season => `
-                <div class="season">
-                    <h4>Season ${season.number}</h4>
-                    ${season.episodes.map(episode => `
-                        <div class="episode" onclick="openPlayer('${episode.source}')">
-                            ${episode.title} - ${episode.duration}
-                        </div>
-                    `).join('')}
-                </div>
-            `).join('');
-        }
-
-        // Video Player Functions
-        function openPlayer(source) {
-            document.getElementById('playerModal').style.display = 'block';
-            document.getElementById('modalContent').innerHTML = `
-                <video class="video-player" controls autoplay>
-                    <source src="${source}" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
-            `;
-        }
-
-        function closePlayer() {
-            const video = document.querySelector('.video-player');
-            if(video) {
-                video.pause();
-                video.currentTime = 0;
-            }
-            document.getElementById('playerModal').style.display = 'none';
-        }
-
-        // My List Functions
+        // My List functionality
         function toggleMyList(movieId) {
             const index = myList.indexOf(movieId);
-            if(index === -1) {
+            if (index === -1) {
                 myList.push(movieId);
             } else {
                 myList.splice(index, 1);
@@ -329,7 +346,27 @@
             renderMovies(document.querySelector('.nav-link.active').dataset.filter);
         }
 
-        // Event Listeners
+        // Video player
+        function openPlayer(source) {
+            document.getElementById('playerModal').style.display = 'block';
+            document.getElementById('modalContent').innerHTML = `
+                <video class="video-player" controls autoplay>
+                    <source src="${source}" type="video/mp4">
+                    Your browser does not support videos.
+                </video>
+            `;
+        }
+
+        function closePlayer() {
+            document.getElementById('playerModal').style.display = 'none';
+            const video = document.querySelector('.video-player');
+            if(video) {
+                video.pause();
+                video.currentTime = 0;
+            }
+        }
+
+        // Event listeners
         document.querySelectorAll('.nav-link').forEach(link => {
             link.addEventListener('click', (e) => {
                 document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
@@ -338,8 +375,37 @@
             });
         });
 
-        // Initial Render
+        document.querySelector('.search-input').addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const filtered = movies.filter(movie =>
+                movie.title.toLowerCase().includes(searchTerm) ||
+                movie.description.toLowerCase().includes(searchTerm) ||
+                movie.genre.toLowerCase().includes(searchTerm)
+            );
+            document.getElementById('moviesContainer').innerHTML = filtered.map(movie => `
+                <div class="movie-card" data-id="${movie.id}">
+                    <!-- Movie card HTML -->
+                </div>
+            `).join('');
+        });
+
+        // Initialize
         renderMovies('home');
+
+        function addCardListeners() {
+            document.querySelectorAll('.movie-card').forEach(card => {
+                card.addEventListener('click', (e) => {
+                    if (!e.target.classList.contains('add-to-list')) {
+                        const movie = movies.find(m => m.id == card.dataset.id);
+                        if(movie.type === 'series') {
+                            openPlayer(movie.seasons[0].episodes[0].source);
+                        } else {
+                            openPlayer(movie.source);
+                        }
+                    }
+                });
+            });
+        }
     </script>
 </body>
 </html>
