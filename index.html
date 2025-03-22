@@ -575,20 +575,26 @@
             });
         });
 
-        // Close predictions when clicking outside
         document.addEventListener('click', (e) => {
-        function addCardListeners() {
-        document.querySelectorAll('.movie-card').forEach(card => {
-            card.addEventListener('click', (e) => {
-                if (!e.target.classList.contains('add-to-list')) {
-                    const movie = movies.find(m => m.id == card.dataset.id);
-                    if(movie.type === 'series') {
-                        openPlayer(movie.seasons[0].episodes[0].source);
-                    } else {
-                        openPlayer(movie.source);
-                    }
-                }
-            });
+            if (!e.target.closest('.search-container')) {
+                document.getElementById('predictionsDropdown').style.display = 'none';
+            }
         });
-    }
-</script>
+
+        function addCardListeners() {
+            document.querySelectorAll('.movie-card').forEach(card => {
+                card.addEventListener('click', (e) => {
+                    if (!e.target.classList.contains('add-to-list')) {
+                        const movie = movies.find(m => m.id == card.dataset.id);
+                        if(movie.type === 'series') {
+                            openPlayer(movie.seasons[0].episodes[0].source);
+                        } else {
+                            openPlayer(movie.source);
+                        }
+                    }
+                });
+            });
+        }
+    </script>
+</body>
+</html>
